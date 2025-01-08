@@ -28,10 +28,19 @@ export function parseMarkdownToHtml(markdown: string) {
 }
 
 async function getNewsArticle(id: string) {
-  const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/news/${id}`;
-  const res = await fetch(url, { cache: "no-store" });
-  if (!res.ok) throw new Error("Failed to fetch news article");
-  return (await res.json()).data;
+  const newUrl = `https://newscope.in/api/news/${id}`;
+  const oldUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/news/${id}`;
+
+  try {
+    const res = await fetch(newUrl, { cache: "no-store" });
+    if (!res.ok) throw new Error("Failed to fetch news article from new domain");
+    return (await res.json()).data;
+  } catch (error) {
+    console.warn("Fetching from new domain failed, trying old domain:", error);
+    const res = await fetch(oldUrl, { cache: "no-store" });
+    if (!res.ok) throw new Error("Failed to fetch news article from old domain");
+    return (await res.json()).data;
+  }
 }
 
 export default function NewsArticlePage({
