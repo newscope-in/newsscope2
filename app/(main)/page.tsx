@@ -1,6 +1,7 @@
 import NewsBanner from "@/components/NewsBanner";
 import { NewsList } from "@/components/NewsList";
 import TopRead from "@/components/TopRead";
+import YoutubeGallery from "@/components/YoutubeGallery";
 import { fetchNews } from "@/utils/newsArticles";
 
 interface Article {
@@ -59,6 +60,9 @@ export default async function Home() {
 
       <div className="container mx-auto px-4 py-12">
         <NewsList />
+      </div>
+      <div className="mb-60"> 
+        <YoutubeGallery/>
       </div>
 
       <div className="container mx-auto px-4 py-12">
