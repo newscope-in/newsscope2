@@ -34,6 +34,8 @@ async function getNewsArticle(id: string) {
   try {
     const res = await fetch(newUrl, { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to fetch news article from new domain");
+    // console.log(await res.json()).data);
+
     return (await res.json()).data;
   } catch (error) {
     console.warn("Fetching from new domain failed, trying old domain:", error);
@@ -57,6 +59,7 @@ export default function NewsArticlePage({
       try {
         const { id } = await params;
         const article = await getNewsArticle(id);
+        console.log(article)
         setNewsArticle(article);
 
         const parsedDesc = await parseMarkdownToHtml(article.description);
@@ -129,6 +132,7 @@ export default function NewsArticlePage({
             )}
           </div>
         </Card>
+        <p> Image Source: {newsArticle.imageSource}</p>
       </article>
     </main>
   );

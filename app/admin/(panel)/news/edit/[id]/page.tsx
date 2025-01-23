@@ -17,6 +17,7 @@ export default function EditNewsPage() {
     thumbnail: "",
     videoLink: "",
     category: "",
+    imageSource: "",
     author: "",
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -201,6 +202,21 @@ export default function EditNewsPage() {
             id="author"
             name="author"
             value={newsData.author}
+            onChange={handleInputChange}
+            required
+            className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="imageSource" className="block text-sm font-medium mb-2">
+            Image Source
+          </label>
+          <input
+            type="text"
+            id="imageSource"
+            name="imageSource"
+            value={newsData.imageSource}
             onChange={handleInputChange}
             required
             className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"

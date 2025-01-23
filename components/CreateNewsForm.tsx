@@ -29,24 +29,31 @@ export default function CreateNewsForm() {
     description: "",
     thumbnail: "",
     videoLink: "",
+    imageSource: "",
     category: "",
     author: "",
+
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
+   
+  
     const requestData = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
-      if (value) requestData.append(key, value);
+      if (value) requestData.append(key, value.toString());
     });
+
+    console.log(formData);
 
     try {
       const response = await fetch("/api/news", {
         method: "POST",
         body: requestData,
       });
+      
 
       if (!response.ok) {
         throw new Error("Failed to create news");
@@ -67,6 +74,7 @@ export default function CreateNewsForm() {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    console.log(formData)
   };
 
   return (
@@ -117,6 +125,14 @@ export default function CreateNewsForm() {
             onChange={handleChange}
             required
             placeholder="Enter author name"
+          />
+          <TextInput
+            label="Image Source"
+            name="imageSource"
+            value={formData.imageSource}
+            onChange={handleChange}
+            required
+            placeholder="Enter image source"
           />
         </form>
       </CardContent>

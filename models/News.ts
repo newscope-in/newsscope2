@@ -9,6 +9,7 @@ export interface INews extends Document {
   videoLink?: string;
   category: string;
   author: string; // Author as string (name)
+  imageSource: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -31,6 +32,11 @@ const newsSchema = new Schema<INews>(
     videoLink: {
       type: String,
       required: false,
+    },
+    imageSource: {
+      type: String,
+      required: true,
+     
     },
     category: {
       type: String,

@@ -5,8 +5,6 @@ import News from "@/models/News";
 import connectDB from "@/lib/mongoDb";
 import checkAuthentication from "@/lib/checkAuthentication";
 
-
-
 const newsFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
@@ -14,6 +12,7 @@ const newsFormSchema = z.object({
   videoLink: z.string().url("Invalid video URL").optional().nullable(),
   category: z.string().min(1, "Category is required"),
   author: z.string().min(1, "Author is required"),
+  imageSource: z.string().optional().nullable().or(z.literal("")),
 });
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -39,9 +38,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       title: formData.get('title') as string,
       description: formData.get('description') as string,
       thumbnail: formData.get('thumbnail') as string,
-      videoLink: formData.get('videoLink') as string || null,
+      imageSource: formData.get('imageSource') as string || null, 
       category: formData.get('category') as string,
       author: formData.get('author') as string || "Admin",
+      videoLink: formData.get('videoLink') as string || null,
+    
+     
+    
     };
 
     // Validate the data using Zod schema
