@@ -14,7 +14,7 @@ function calculateReadTime(content: string): string {
   const wordsPerMinute = 200; // Average reading speed
   const wordCount = content.split(/\s+/).length; // Count words by splitting on whitespace
   const readTime = Math.ceil(wordCount / wordsPerMinute); // Calculate and round up
-  return `${readTime} min`;
+  return `${readTime}`;
 }
 
 export function parseMarkdownToHtml(markdown: string) {
