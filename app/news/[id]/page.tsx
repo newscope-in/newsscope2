@@ -132,7 +132,7 @@ export default function NewsArticlePage({
             )}
           </div>
         </Card>
-        <p> Image Source: {newsArticle.imageSource}</p>
+        <p> {newsArticle.imageSource}</p>  //Image source please add in gray text with good css
       </article>
     </main>
   );
