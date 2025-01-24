@@ -1,92 +1,130 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import React from 'react';
+"use client"
 
+import Image from "next/image"
+import Link from "next/link"
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Calendar, User } from "lucide-react"
+import { marked } from "marked"
 
 interface NewsArticle {
-  _id: string;
-  title: string;
-  description: string; // Raw HTML content
-  author: string;
-  createdAt: string;
-  thumbnail: string;
-  category: string;
+  _id: string
+  title: string
+  description: string
+  author: string
+  createdAt: string
+  thumbnail: string
+  category: string
 }
 
 interface NewsCardProps {
-  article: NewsArticle;
+  article: NewsArticle
 }
 
-// Utility function to truncate HTML content while preserving tags
-const truncateHtml = (htmlString: string, maxLength: number = 150): string => {
-  let doc = new DOMParser().parseFromString(htmlString, 'text/html');
-  let bodyText = doc.body.textContent || "";
+// Utility function to truncate content (handles both HTML and markdown)
+const truncateContent = (content: string, maxLength = 150): string => {
+  try {
+    // First check if content is HTML
+    const isHtml = /<[a-z][\s\S]*>/i.test(content)
 
-  if (bodyText.length > maxLength) {
-    bodyText = bodyText.substring(0, maxLength) + '...';
+    // Remove HTML tags if present
+    let plainText = isHtml
+      ? content.replace(/<[^>]+>/g, "")
+      : content
+          .replace(/\[(.*?)\]$$.*?$$/g, "$1") // Remove markdown links but keep text
+          .replace(/[#*`_~]/g, "") // Remove markdown symbols
+          .replace(/\n+/g, " ") // Replace newlines with spaces
+
+    // Clean up extra spaces
+    plainText = plainText
+      .replace(/&nbsp;/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+
+    // Truncate the text
+    return plainText.length > maxLength ? plainText.substring(0, maxLength).trim() + "..." : plainText
+  } catch (error) {
+    console.error("Error truncating content:", error)
+    return ""
   }
-
-  return doc.body.innerHTML = bodyText;  // Return truncated HTML
-};
-
-// Utility function to format date in 'DD MMM YYYY' format
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  const options: Intl.DateTimeFormatOptions = {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  };
-
-  return date.toLocaleDateString('en-GB', options);
 }
 
-const NewsCard: React.FC<NewsCardProps> = ({ article }) => {
-  // Truncate HTML description for display
-  const truncatedDescription = truncateHtml(article.description, 150);
+// Utility function to format date
+function formatDate(dateString: string): string {
+  try {
+    const date = new Date(dateString)
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }).format(date)
+  } catch (error) {
+    console.error("Error formatting date:", error)
+    return dateString
+  }
+}
+
+// Utility function to get category color
+function getCategoryColor(category: string): string {
+  const categories: Record<string, string> = {
+    Technology: "bg-red-500",
+    Politics: "bg-red-500",
+    Sports: "bg-red-500",
+    Entertainment: "bg-red-500",
+    Business: "bg-red-500",
+    Science: "bg-red-500",
+    Health: "bg-red-500",
+    World: "bg-red-500",
+    Other: "bg-red-500",
+  }
+  return categories[category] || categories.Other
+}
+
+export function NewsCard({ article }: NewsCardProps) {
+  const truncatedDescription = truncateContent(article.description)
 
   return (
-    <Link href={`/news/${article._id}`}>
-      <div className="bg-white cursor-pointer rounded-lg shadow-lg overflow-hidden hover:shadow-2xl hover:scale-105 transition-transform duration-300 h-full hover:bg-gray-50">
-        {/* Image Section */}
-        <div className="relative h-48 w-full group">
+    <Link href={`/news/${article._id}`} className="block h-full">
+      <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow duration-300">
+        <div className="relative aspect-video overflow-hidden">
           <Image
-            src={article.thumbnail}
+            src={article.thumbnail || "/placeholder.svg"}
             alt={article.title}
-         fill
-            className="object-cover transition-transform duration-300 group-hover:scale-110"
+            fill
+            className="object-cover transition-transform duration-300 hover:scale-105"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
           <div className="absolute top-4 left-4 z-10">
-            <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
+            <Badge variant="secondary" className={`${getCategoryColor(article.category)} text-white hover:opacity-90 rounded-2xl py-1`}>
               {article.category}
-            </span>
+            </Badge>
           </div>
         </div>
 
-        {/* Content Section */}
-        <div className="p-6 h-[calc(100%-12rem)] flex flex-col justify-between">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2 hover:text-blue-600 transition-colors group-hover:text-blue-500">
-              {article.title}
-            </h2>
-            
-            {/* Render parsed and truncated HTML description */}
-            <div
-              className="text-gray-500 text-base transition-all duration-300 ease-in-out group-hover:text-gray-700"
-              style={{ maxHeight: '4.5rem', overflow: 'hidden' }}
-              dangerouslySetInnerHTML={{ __html: truncatedDescription }}
-            />
-          </div>
+        <CardHeader>
+          <h2 className="text-xl font-bold leading-tight line-clamp-2 hover:text-primary transition-colors">
+            {article.title}
+          </h2>
+        </CardHeader>
 
-          {/* Author and Date */}
-          <div className="flex justify-between items-center text-sm text-gray-500 mt-4">
+        <CardContent>
+          <p className="text-muted-foreground line-clamp-3">{truncatedDescription}</p>
+        </CardContent>
+
+        <CardFooter className="flex justify-between items-center text-sm text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <User className="h-4 w-4" />
             <span>{article.author}</span>
-            <span>{formatDate(article.createdAt)}</span>
           </div>
-        </div>
-      </div>
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4" />
+            <time dateTime={article.createdAt}>{formatDate(article.createdAt)}</time>
+          </div>
+        </CardFooter>
+      </Card>
     </Link>
-  );
-};
+  )
+}
 
-export default NewsCard;
+export default NewsCard
+

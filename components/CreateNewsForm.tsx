@@ -1,14 +1,13 @@
 "use client"
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { TextInput, ThumbnailUpload, CategorySelect } from "@/components/NewsFormInputs";
-import RichTextEditor from "@/components/RichTextEditor";
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
+import { TextInput, ThumbnailUpload, CategorySelect } from "@/components/NewsFormInputs"
+import { MarkdownEditor } from "@/components/MarkdownEditor"
 
-// Updated categories for the news article
 const categories = [
   "Technology",
   "Politics",
@@ -19,11 +18,11 @@ const categories = [
   "Health",
   "World",
   "Other",
-];
+]
 
 export default function CreateNewsForm() {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -32,53 +31,44 @@ export default function CreateNewsForm() {
     imageSource: "",
     category: "",
     author: "",
-
-  });
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+    e.preventDefault()
+    setIsLoading(true)
 
-   
-  
-    const requestData = new FormData();
+    const requestData = new FormData()
     Object.entries(formData).forEach(([key, value]) => {
-      if (value) requestData.append(key, value.toString());
-    });
-
-    console.log(formData);
+      if (value) requestData.append(key, value.toString())
+    })
 
     try {
       const response = await fetch("/api/news", {
         method: "POST",
         body: requestData,
-      });
-      
+      })
 
       if (!response.ok) {
-        throw new Error("Failed to create news");
+        throw new Error("Failed to create news")
       }
 
-      toast.success("News created successfully!");
-      router.push("/");
+      toast.success("News created successfully!")
+      router.push("/")
     } catch (error) {
-      toast.error("Failed to create news");
-      console.error("Error:", error);
+      toast.error("Failed to create news")
+      console.error("Error:", error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    console.log(formData)
-  };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
 
   return (
-    <Card className="max-w-3xl mx-auto shadow-lg bg-white dark:bg-gray-800">
+    <Card className="max-w-4xl mx-auto shadow-lg bg-white dark:bg-gray-800">
       <CardHeader>
         <h1 className="text-3xl font-bold text-center text-gray-800 dark:text-white">Create News Article</h1>
       </CardHeader>
@@ -93,12 +83,11 @@ export default function CreateNewsForm() {
             placeholder="Enter news title"
           />
           <div className="space-y-2">
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-              Description
-            </label>
-            <RichTextEditor
-              content={formData.description}
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Content</label>
+            <MarkdownEditor
+              value={formData.description}
               onChange={(content) => setFormData((prev) => ({ ...prev, description: content }))}
+              placeholder="Write your news article content here..."
             />
           </div>
           <ThumbnailUpload
@@ -139,7 +128,7 @@ export default function CreateNewsForm() {
       <CardFooter>
         <Button
           type="submit"
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
+          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
           disabled={isLoading}
           onClick={handleSubmit}
         >
@@ -147,5 +136,6 @@ export default function CreateNewsForm() {
         </Button>
       </CardFooter>
     </Card>
-  );
+  )
 }
+
