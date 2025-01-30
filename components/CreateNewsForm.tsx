@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { TextInput, ThumbnailUpload, CategorySelect } from "@/components/NewsFormInputs"
 import { MarkdownEditor } from "@/components/MarkdownEditor"
+import TagSelector from "./TagSelector"
 
 const categories = [
   "Technology",
@@ -107,6 +108,7 @@ export default function CreateNewsForm() {
             onChange={(value) => setFormData((prev) => ({ ...prev, category: value }))}
             categories={categories}
           />
+          <TagSelector/>
           <TextInput
             label="Author"
             name="author"
