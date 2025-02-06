@@ -11,8 +11,10 @@ const newsFormSchema = z.object({
   thumbnail: z.string().url("Invalid thumbnail URL"),
   videoLink: z.string().url("Invalid video URL").optional().nullable(),
   category: z.string().min(1, "Category is required"),
+  subCategory: z.string().optional().nullable(),
   author: z.string().min(1, "Author is required"),
   imageSource: z.string().optional().nullable().or(z.literal("")),
+  keywords: z.array(z.string()).optional(),
 });
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -35,16 +37,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Extract form data values
     const newsData = {
-      title: formData.get('title') as string,
-      description: formData.get('description') as string,
-      thumbnail: formData.get('thumbnail') as string,
-      imageSource: formData.get('imageSource') as string || null, 
-      category: formData.get('category') as string,
-      author: formData.get('author') as string || "Admin",
-      videoLink: formData.get('videoLink') as string || null,
-    
-     
-    
+      title: formData.get("title") as string,
+      description: formData.get("description") as string,
+      thumbnail: formData.get("thumbnail") as string,
+      imageSource: formData.get("imageSource") as string,
+      category: formData.get("category") as string,
+      subCategory: formData.get("subCategory") as string || null,
+      author: formData.get("author") as string || "Admin",
+      videoLink: formData.get("videoLink") as string || null,
+      keywords: (formData.get("keywords") as string)?.split(",").map((k) => k.trim()) || [],
     };
 
     // Validate the data using Zod schema

@@ -1,5 +1,3 @@
-
-;
 import CreateNewsForm from "@/components/CreateNewsForm";
 import checkAuthentication from "@/lib/checkAuthentication"; // Import your authentication check function
 

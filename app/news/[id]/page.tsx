@@ -105,7 +105,7 @@ export default function NewsArticlePage({
             <h1 className="font-heading text-4xl font-bold tracking-tight lg:text-5xl">{newsArticle.title}</h1>
 
             {/* Meta Information */}
-            <ArticleMeta date={newsArticle.createdAt} category={newsArticle.category} readTime={readTime} />
+            <ArticleMeta date={newsArticle.createdAt} category={newsArticle.category} subcategory={newsArticle.subcategory} readTime={readTime} />
 
             {/* Content */}
             <div
@@ -132,8 +132,18 @@ export default function NewsArticlePage({
             </div>
           )}
         </div>
+
+        {/* Keywords Section */}
+        {newsArticle.keywords && newsArticle.keywords.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {newsArticle.keywords.map((keyword: string, index: number) => (
+              <span key={index} className="px-3 py-1 text-sm font-medium text-white bg-primary rounded-full">
+                {keyword}
+              </span>
+            ))}
+          </div>
+        )}
       </article>
     </main>
   )
 }
-
