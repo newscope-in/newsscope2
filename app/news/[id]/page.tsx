@@ -137,6 +137,7 @@ export default function NewsArticlePage({ params }: { params: { id: string } }) 
 
         {newsArticle.keywords && newsArticle.keywords.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
+            Tags: 
             {newsArticle.keywords.map((keyword: string, index: number) => (
               <span key={index} className="px-3 py-1 text-sm font-medium text-white bg-primary rounded-full">
                 {keyword}
