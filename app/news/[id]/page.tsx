@@ -11,74 +11,64 @@ import { marked } from "marked"
 
 // Helper function to calculate read time
 function calculateReadTime(content: string): string {
-  const wordsPerMinute = 200 // Average reading speed
-  const wordCount = content.split(/\s+/).length // Count words by splitting on whitespace
-  const readTime = Math.ceil(wordCount / wordsPerMinute) // Calculate and round up
+  const wordsPerMinute = 200
+  const wordCount = content.split(/\s+/).length
+  const readTime = Math.ceil(wordCount / wordsPerMinute)
   return `${readTime}`
 }
 
+// Parse Markdown to HTML
 export function parseMarkdownToHtml(markdown: string) {
   try {
-    const html = marked(markdown)
-    return html
+    return marked(markdown)
   } catch (error) {
-    console.error("Error parsing markdown to HTML:", error)
+    console.error("Error parsing markdown:", error)
     throw error
   }
 }
 
+// Fetch news article data
 async function getNewsArticle(id: string) {
-  const newUrl = `https://newscope.in/api/news/${id}`
+  const newUrl = `/api/news/${id}`
   const oldUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/news/${id}`
 
   try {
     const res = await fetch(newUrl, { cache: "no-store" })
-    if (!res.ok) throw new Error("Failed to fetch news article from new domain")
+    if (!res.ok) throw new Error("Failed to fetch news article")
     return (await res.json()).data
   } catch (error) {
-    console.warn("Fetching from new domain failed, trying old domain:", error)
+    console.warn("Trying old domain:", error)
     const res = await fetch(oldUrl, { cache: "no-store" })
     if (!res.ok) throw new Error("Failed to fetch news article from old domain")
     return (await res.json()).data
   }
 }
 
-export default function NewsArticlePage({
-  params,
-}: {
-  params: { id: string }
-}) {
+export default function NewsArticlePage({ params }: { params: { id: string } }) {
   const [newsArticle, setNewsArticle] = useState<any>(null)
   const [parsedDescription, setParsedDescription] = useState<string>("")
 
-  // Fetch the article data and parse description
   useEffect(() => {
     async function fetchData() {
       try {
         const { id } = await params
         const article = await getNewsArticle(id)
-        console.log(article)
         setNewsArticle(article)
-
-        const parsedDesc = await parseMarkdownToHtml(article.description)
-        setParsedDescription(parsedDesc)
+        setParsedDescription(await parseMarkdownToHtml(article.description))
       } catch (error) {
         console.error(error)
-        notFound() // Redirect to a 404 page if the article fetch fails
+        notFound()
       }
     }
-
     fetchData()
   }, [params])
 
-  // If the article is not loaded, return early
-  if (!newsArticle) return <div>Loading...</div>
+  if (!newsArticle) return <div className="flex h-screen items-center justify-center text-lg">Loading...</div>
 
-  // Calculate the read time using the article content
   const readTime = calculateReadTime(newsArticle.description)
 
   return (
-    <main className="container relative mx-auto max-w-4xl px-6 py-8">
+    <main className="container mx-auto max-w-4xl px-6 py-8">
       <div className="mb-8">
         <BackLink />
       </div>
@@ -86,7 +76,7 @@ export default function NewsArticlePage({
       <article className="space-y-8">
         {/* Hero Image */}
         {newsArticle.thumbnail && (
-          <div className="relative aspect-[2/1] overflow-hidden rounded-lg">
+          <div className="relative aspect-[2/1] overflow-hidden rounded-lg shadow-lg">
             <Image
               src={newsArticle.thumbnail || "/placeholder.svg"}
               alt={`Thumbnail for ${newsArticle.title}`}
@@ -99,17 +89,29 @@ export default function NewsArticlePage({
           </div>
         )}
 
-        <Card className="border-none p-8 shadow-lg">
+        <Card className="border-none p-8 shadow-xl rounded-2xl bg-white">
           <div className="space-y-6">
             {/* Title */}
-            <h1 className="font-heading text-4xl font-bold tracking-tight lg:text-5xl">{newsArticle.title}</h1>
+            <h1 className="font-heading text-4xl font-bold tracking-tight text-gray-900 lg:text-5xl">
+              {newsArticle.title}
+            </h1>
+
+            {/* Category & Subcategory */}
+            <div className="flex flex-wrap items-center gap-2">
+            
+              {newsArticle.subCategory && (
+                <span className="px-3 py-1 text-sm font-medium text-gray-700 bg-gray-200 rounded-full">
+                  {newsArticle.subCategory}
+                </span>
+              )}
+            </div>
 
             {/* Meta Information */}
-            <ArticleMeta date={newsArticle.createdAt} category={newsArticle.category} subcategory={newsArticle.subcategory} readTime={readTime} />
+            <ArticleMeta date={newsArticle.createdAt} category={newsArticle.category} readTime={readTime} />
 
             {/* Content */}
             <div
-              className="prose prose-gray color-gray max-w-none"
+              className="prose prose-gray max-w-none text-lg leading-relaxed"
               dangerouslySetInnerHTML={{ __html: parsedDescription }}
             ></div>
 
@@ -123,17 +125,16 @@ export default function NewsArticlePage({
         </Card>
 
         {/* Attribution Section */}
-        <div className="mt-4 space-y-2 text-sm text-muted-foreground">
+        <div className="mt-6 space-y-2 text-sm text-gray-600">
           {newsArticle.imageSource && <p className="italic">Image Source: {newsArticle.imageSource}</p>}
           {newsArticle.author && (
             <div className="flex items-center gap-2">
               <span className="font-medium">Written by:</span>
-              <span className="text-primary">{newsArticle.author}</span>
+              <span className="text-primary font-semibold">{newsArticle.author}</span>
             </div>
           )}
         </div>
 
-        {/* Keywords Section */}
         {newsArticle.keywords && newsArticle.keywords.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
             {newsArticle.keywords.map((keyword: string, index: number) => (

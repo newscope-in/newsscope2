@@ -11,7 +11,7 @@ const newsFormSchema = z.object({
   thumbnail: z.string().url("Invalid thumbnail URL"),
   videoLink: z.string().url("Invalid video URL").optional().nullable(),
   category: z.string().min(1, "Category is required"),
-  subCategory: z.string().optional().nullable(),
+  subCategory: z.string().optional(),
   author: z.string().min(1, "Author is required"),
   imageSource: z.string().optional().nullable().or(z.literal("")),
   keywords: z.array(z.string()).optional(),

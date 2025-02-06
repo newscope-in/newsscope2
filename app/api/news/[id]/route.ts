@@ -2,14 +2,18 @@ import checkAuthentication from "@/lib/checkAuthentication";
 import connectDB from "@/lib/mongoDb";
 import News from "@/models/News";
 import { NextRequest, NextResponse } from "next/server";
+import Cors from 'next-cors'
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ): Promise<NextResponse> {
   try {
+    
     // Initialize database connection
     await connectDB();
+
+    
 
     // Await params before using its properties
     const { id } = await params;

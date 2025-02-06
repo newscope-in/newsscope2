@@ -41,7 +41,7 @@ export default function CreateNewsForm() {
     imageSource: "",
     videoLink: "",
     category: "",
-    subcategory: "",
+    subCategory: "",
     author: "",
     keywords: [],
   })
@@ -82,14 +82,14 @@ export default function CreateNewsForm() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     if (name === "category") {
-      setFormData((prev) => ({ ...prev, [name]: value, subcategory: "" }))
+      setFormData((prev) => ({ ...prev, [name]: value, subCategory: "" }))
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }))
     }
   }
 
   const handleSubCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFormData((prev) => ({ ...prev, subcategory: e.target.value }))
+    setFormData((prev) => ({ ...prev, subCategory: e.target.value }))
   }
 
   const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -150,13 +150,13 @@ export default function CreateNewsForm() {
           </div>
 
           {/* Category */}
-          <CategorySelect value={formData.category} onChange={(value) => setFormData((prev) => ({ ...prev, category: value, subcategory: "" }))} categories={categories} />
+          <CategorySelect value={formData.category} onChange={(value) => setFormData((prev) => ({ ...prev, category: value, subCategory: "" }))} categories={categories} />
 
           {/* Subcategory */}
           {subCategoryOptions.length > 0 && (
             <div>
               <label className="text-sm font-medium text-gray-700 dark:text-gray-200">Subcategory</label>
-              <select name="subcategory" value={formData.subcategory} onChange={handleSubCategoryChange} className="w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" required>
+              <select name="subCategory" value={formData.subCategory} onChange={handleSubCategoryChange} className="w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-primary focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" required>
                 <option value="">Select a subcategory</option>
                 {subCategoryOptions.map((subcat) => (
                   <option key={subcat} value={subcat}>
