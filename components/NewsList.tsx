@@ -126,7 +126,7 @@ export const NewsList: React.FC<NewsListProps> = ( {category, search}) => {
   return (
     <div className="max-w-screen-xl mx-auto px-4 py-8">
      <h2 className="text-3xl font-bold text-gray-900 mb-8 px-1">
-  {category ? `Showing Latest Updates from ${category.toUpperCase()}` : search ? `Search Results for "${search}"` : "Latest News"}
+  {category ? `Showing Latest Updates from ${category.toUpperCase()}` : search ? `Search Results for "${decodeURIComponent(search)}"` : "Latest News"}
 </h2>
       {/* Animated News Cards Grid */}
       <motion.div

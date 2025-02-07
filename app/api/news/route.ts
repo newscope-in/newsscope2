@@ -14,7 +14,7 @@ const newsFormSchema = z.object({
   subCategory: z.string().optional(),
   author: z.string().min(1, "Author is required"),
   imageSource: z.string().optional().nullable().or(z.literal("")),
-  keywords: z.array(z.string()).optional(),
+  keywords: z.array(z.string()).optional().default([]),
 });
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -34,19 +34,24 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const formData = await request.formData();
-
-    // Extract form data values
+    
+    // Convert FormData to a plain object with proper type handling
     const newsData = {
-      title: formData.get("title") as string,
-      description: formData.get("description") as string,
-      thumbnail: formData.get("thumbnail") as string,
-      imageSource: formData.get("imageSource") as string,
-      category: formData.get("category") as string,
-      subCategory: formData.get("subCategory") as string || null,
-      author: formData.get("author") as string || "Admin",
-      videoLink: formData.get("videoLink") as string || null,
-      keywords: (formData.get("keywords") as string)?.split(",").map((k) => k.trim()) || [],
+      title: formData.get("title")?.toString() || "",
+      description: formData.get("description")?.toString() || "",
+      thumbnail: formData.get("thumbnail")?.toString() || "",
+      imageSource: formData.get("imageSource")?.toString() || "N/A",
+      category: formData.get("category")?.toString() || "",
+      subCategory: formData.get("subCategory")?.toString() || undefined,
+      author: formData.get("author")?.toString() || "Admin",
+      videoLink: formData.get("videoLink")?.toString() || null,
+      keywords: formData.get("keywords")?.toString()
+        ? formData.get("keywords")?.toString().split(",").filter(Boolean).map(k => k.trim())
+        : [],
     };
+
+    // Log the received data for debugging
+    console.log("Received news data:", newsData);
 
     // Validate the data using Zod schema
     const validatedData = newsFormSchema.parse(newsData);
@@ -66,11 +71,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     console.error("Error creating news:", error);
 
     if (error instanceof z.ZodError) {
+      // Return detailed validation errors
       return NextResponse.json(
         {
           success: false,
           message: "Validation failed",
-          errors: error.errors,
+          errors: error.errors.map(err => ({
+            path: err.path.join("."),
+            message: err.message
+          })),
         },
         { status: 400 }
       );
@@ -101,12 +110,17 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     }
 
     if (search) {
+      const decodedSearch = decodeURIComponent(search); // Convert %20 back to spaces
+      const searchRegex = new RegExp(decodedSearch.split(" ").join("\\s+"), "i");
+    
       query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
+        { title: { $regex: searchRegex } },
+        { description: { $regex: searchRegex } },
+        { author: { $regex: searchRegex } },
+        { keywords: { $elemMatch: { $regex: searchRegex } } },
+        { imageSource: { $regex: searchRegex } }
       ];
     }
-
     const data = await News.find(query).sort({ createdAt: -1 });
 
     return NextResponse.json(
@@ -129,4 +143,3 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     );
   }
 }
-

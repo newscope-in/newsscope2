@@ -4,10 +4,11 @@ import { Badge } from "@/components/ui/badge";
 interface ArticleMetaProps {
   date: string; // ISO string representing the date and time
   category: string;
+  subCategory?: string;
   readTime?: string;
 }
 
-export function ArticleMeta({ date, category, readTime }: ArticleMetaProps) {
+export function ArticleMeta({ date, category, subCategory, readTime }: ArticleMetaProps) {
   return (
     <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
       {/* Display the formatted date and time */}
@@ -19,6 +20,12 @@ export function ArticleMeta({ date, category, readTime }: ArticleMetaProps) {
       <Badge variant="secondary" className="font-normal">
         {category}
       </Badge>
+    {subCategory && <Badge variant="outline" className="font-normal">
+        {subCategory}
+      </Badge> }
+      
+
+      
 
       {/* Optional Read Time */}
       {readTime && (

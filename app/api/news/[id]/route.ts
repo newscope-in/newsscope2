@@ -64,61 +64,62 @@ export async function PUT(
     // Initialize database connection
     await connectDB();
 
-    const isAdmin = await checkAuthentication(request);
+    const { id } = params;
 
-    if (!isAdmin) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Unauthorized: Only admins can edit news.",
-        },
-        { status: 403 }
-      );
-    }
-
-    // Await params before using its properties
-    const { id } = await params;
-
-    // Parse the updated data from the request body
-    const updatedData = await request.json();
+    // Parse the request body
+    const body = await request.formData();
+    
+    // Extract fields
+    const title = body.get("title")?.toString() || "";
+    const description = body.get("description")?.toString() || "";
+    const thumbnail = body.get("thumbnail")?.toString() || "";
+    const imageSource = body.get("imageSource")?.toString() || "";
+    const videoLink = body.get("videoLink")?.toString() || "";
+    const category = body.get("category")?.toString() || "";
+    const subCategory = body.get("subCategory")?.toString() || "";
+    const author = body.get("author")?.toString() || "";
+    const keywordsRaw = body.get("keywords")?.toString() || "";
+    
+    // Convert keywords into an array
+    const keywords = keywordsRaw ? keywordsRaw.split(",").map((kw) => kw.trim()) : [];
 
     // Find and update the news item
-    const updatedNews = await News.findByIdAndUpdate(id, updatedData, {
-      new: true, // Return the updated document
-      runValidators: true, // Ensure schema validation
-    });
+    const updatedNews = await News.findByIdAndUpdate(
+      id,
+      {
+        title,
+        description,
+        thumbnail,
+        imageSource,
+        videoLink,
+        category,
+        subCategory,
+        author,
+        keywords,
+      },
+      { new: true, runValidators: true }
+    );
 
     if (!updatedNews) {
       return NextResponse.json(
-        {
-          success: false,
-          message: "News item not found.",
-          data: null,
-        },
+        { success: false, message: "News item not found." },
         { status: 404 }
       );
     }
 
     return NextResponse.json(
-      {
-        success: true,
-        message: "News item updated successfully.",
-        data: updatedNews,
-      },
+      { success: true, message: "News item updated successfully.", data: updatedNews },
       { status: 200 }
     );
   } catch (error) {
     console.error("Error updating news item:", error);
     return NextResponse.json(
-      {
-        success: false,
-        message: "Failed to update news item.",
-        data: null,
-      },
+      { success: false, message: "Failed to update news item.", error: error.message },
       { status: 500 }
     );
   }
 }
+
 
 export async function DELETE(
   request: NextRequest,

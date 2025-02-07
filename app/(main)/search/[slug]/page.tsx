@@ -8,6 +8,7 @@ type PageProps = {
 
 export default function SearchResults({ params }: PageProps) {
   const query = params.slug;
+  console.log(query)
 
   return (
     <div className="container mx-auto px-4 py-8">
