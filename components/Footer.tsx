@@ -11,7 +11,7 @@ export default function Footer() {
         <div className="text-center mb-12">
           <p className="text-gray-700 text-lg">
             Want to share your thoughts?{' '}
-            <Link href="/apply-author" className="text-blue-600 hover:underline font-semibold">
+            <Link href="/apply-author" className="text-blue-600 hover:underline font-semibold" target="_blank" rel="noopener noreferrer">
               Join us as an author!
             </Link>
           </p>
@@ -40,6 +40,7 @@ export default function Footer() {
                   <Link
                     href={category.href}
                     className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
+                    target="_blank" rel="noopener noreferrer"
                   >
                     {category.name}
                   </Link>
@@ -53,22 +54,22 @@ export default function Footer() {
             <h2 className="text-xl font-bold mb-4 text-gray-800">Quick Links</h2>
             <ul className="space-y-2">
               <li>
-                <Link href="/about" className="text-gray-600 hover:text-blue-600 transition-colors duration-200">
+                <Link href="/about" className="text-gray-600 hover:text-blue-600 transition-colors duration-200" target="_blank" rel="noopener noreferrer">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-gray-600 hover:text-blue-600 transition-colors duration-200">
+                <Link href="/contact" className="text-gray-600 hover:text-blue-600 transition-colors duration-200" target="_blank" rel="noopener noreferrer">
                   Contact
                 </Link>
               </li>
               <li>
-                <Link href="/advertise" className="text-gray-600 hover:text-blue-600 transition-colors duration-200">
+                <Link href="/advertise" className="text-gray-600 hover:text-blue-600 transition-colors duration-200" target="_blank" rel="noopener noreferrer">
                   Advertise
                 </Link>
               </li>
               <li>
-                <Link href="/careers" className="text-gray-600 hover:text-blue-600 transition-colors duration-200">
+                <Link href="/careers" className="text-gray-600 hover:text-blue-600 transition-colors duration-200" target="_blank" rel="noopener noreferrer">
                   Careers
                 </Link>
               </li>
@@ -85,6 +86,8 @@ export default function Footer() {
                   href={social.href}
                   aria-label={`Follow us on ${social.name}`}
                   className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -104,13 +107,13 @@ export default function Footer() {
         <div className="border-t border-gray-200 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm mb-4 md:mb-0">
-              &copy; {new Date().getFullYear()} NEWSCOPE. All Rights Reserved.
+              © {new Date().getFullYear()} NEWSCOPE. All Rights Reserved.
             </p>
             <div className="flex space-x-4">
-              <Link href="/privacy-policy" className="text-gray-500 hover:text-blue-600 text-sm">
+              <Link href="/privacy-policy" className="text-gray-500 hover:text-blue-600 text-sm"  target="_blank" rel="noopener noreferrer">
                 Privacy Policy
               </Link>
-              <Link href="/terms-of-service" className="text-gray-500 hover:text-blue-600 text-sm">
+              <Link href="/terms-of-service" className="text-gray-500 hover:text-blue-600 text-sm"  target="_blank" rel="noopener noreferrer">
                 Terms of Service
               </Link>
             </div>
@@ -120,4 +123,5 @@ export default function Footer() {
     </footer>
   );
 }
+
 
