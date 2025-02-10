@@ -17,7 +17,7 @@
 // // }: CategoryPageProps): Promise<Metadata> {
 // //   const category = params.name.toLowerCase();
 // //   const validCategories = categories.map((c) => c.name.toLowerCase());
-  
+
 // //   if (!validCategories.includes(category)) {
 // //     return {
 // //       title: 'Category Not Found',
@@ -37,11 +37,11 @@
 // }: CategoryPageProps) {
 //   const category = params.name.toLowerCase();
 //   const validCategories = categories.map((c) => c.name.toLowerCase());
-  
+
 //   if (!validCategories.includes(category)) {
 //     notFound(); // Trigger a 404 if the category is invalid
 //   }
-  
+
 //   return (
 //     <div className="container mx-auto px-4 py-8">
 //       <h1 className="text-3xl font-bold mb-6 capitalize">
@@ -65,7 +65,7 @@
 //     'world',
 //     'lifestyle',
 //   ];
-  
+
 //   return categoryNames.map((name) => ({
 //     name, // Matches the dynamic segment `[name]`
 //   }));
@@ -82,13 +82,26 @@ import { getStaticProps } from 'next/dist/build/templates/pages';
 type CategoryPageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
 export default function CategoryPage({ params }: CategoryPageProps) {
-  const category = params.name.toLowerCase();
+  // ConstantSourceNode.log()
+
+  const category = params.name.toLowerCase().replace(/-/g, " ");
+  // const subCategories = params.subCategories?.name?.toLowerCase();
+  // console.log(subCategories);
+  console.log(category)
+
+
   const validCategories = categories.map((c) => c.name.toLowerCase());
-  
-  if (!validCategories.includes(category)) {
+  const validSubCategories = categories.flatMap((c) => c.subCategories?.map((sub) => sub.name.toLowerCase()) || []);
+  const isvalidSubcategory = validSubCategories.includes(category) || validCategories.includes(category);
+  console.log(validCategories, "========================================)")
+
+  if (!isvalidSubcategory) {
+    // if (!validSubCategories.includes(subCategories)) {
+
     notFound(); // Trigger a 404 if the category is invalid
   }
-  
+  // }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6 capitalize">
