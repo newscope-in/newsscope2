@@ -10,14 +10,14 @@ export interface Category {
 }
 
 export const categories: Category[] = [
-  { name: "Home", href: "/category/home" },
+  { name: "Home", href: "/" },
   { name: "Politics", href: "/category/politics" },
   {
     name: "Business",
     href: "/category/business",
     subCategories: [
       { name: "Entrepreneurship", href: "/category/entrepreneurship" },
-      { name: "Stock Market", href: "/category/business/stock-market" },
+      { name: "Stock Market", href: "/category/stock-market" },
     ],
   },
   {

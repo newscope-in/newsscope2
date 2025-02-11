@@ -12,12 +12,16 @@ import { MarkdownEditor } from "@/components/MarkdownEditor"
 import { X, User } from "lucide-react"
 
 const categories = [
-  "Home",
   "Politics",
-  "Business",
-  "Education",
-  "Entertainment",
-  "Rights",
+  "Entrepreneurship",
+  "Stock Market",
+  "Science",
+  "Technology",
+  "Lifestyle",
+  "Trending",
+  "Human Rights",
+  "Animal Rights",
+  "Law",
   "Environment",
   "World",
   "Sports",
