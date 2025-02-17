@@ -4,6 +4,8 @@ import TopRead from "@/components/TopRead";
 import YoutubeGallery from "@/components/YoutubeGallery";
 import { fetchNews } from "@/utils/newsArticles";
 
+import NewsSlider from "@/components/hero/NewsSlider";
+
 interface Article {
   _id: string;
   title: string;
@@ -47,7 +49,7 @@ export default async function Home() {
   return (
     <main className="container mx-auto min-h-screen">
       <div className="lg:m-5 rounded-3xl">
-        <NewsBanner
+        {/* <NewsBanner
           title={randomArticle.title}
           description={randomArticle.description}
           author={randomArticle.author}
@@ -55,7 +57,8 @@ export default async function Home() {
           imageUrl={randomArticle.thumbnail}
           id={randomArticle._id}
           category={randomArticle.category}
-        />
+        /> */}
+        <NewsSlider articles={news.slice(0, 6)} autoplayInterval={2500} />
       </div>
 
       <div className="container mx-auto px-4 py-12">
